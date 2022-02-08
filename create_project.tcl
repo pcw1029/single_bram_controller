@@ -1,9 +1,12 @@
-create_project single_bram_controller /home/pcw1029/projects/MTTS/hw/single_bram_controller -part xczu3eg-sfvc784-1-e
-add_files -norecurse {/home/pcw1029/projects/MTTS/hw/single_bram_controller/src/single_bram_controller.v}
+set script_path [ file dirname [ file normalize [ info script ] ] ]
+puts $script_path
+
+create_project single_bram_controller $script_path -part xczu3eg-sfvc784-1-e
+add_files -norecurse $script_path/src/single_bram_controller.v
 update_compile_order -fileset sources_1
 
 
-ipx::package_project -root_dir /home/pcw1029/projects/MTTS/hw/single_bram_controller -vendor user.org -library user -taxonomy /UserIP
+ipx::package_project -root_dir $script_path -vendor user.org -library user -taxonomy /UserIP
 
 ipx::merge_project_changes files [ipx::current_core]
 
@@ -11,12 +14,12 @@ set_property core_revision 2 [ipx::current_core]
 ipx::create_xgui_files [ipx::current_core]
 ipx::update_checksums [ipx::current_core]
 ipx::save_core [ipx::current_core]
-set_property  ip_repo_paths  /home/pcw1029/projects/MTTS/hw/single_bram_controller [current_project]
+set_property  ip_repo_paths  $script_path [current_project]
 update_ip_catalog
 
 close_project
 
-create_project single_bram_controller /home/pcw1029/projects/MTTS/hw/test_single_bram_controller -part xczu3eg-sfvc784-1-e
+create_project single_bram_controller $script_path/../test_single_bram_controller -part xczu3eg-sfvc784-1-e
 
 create_bd_design "design_1"
 update_compile_order -fileset sources_1
@@ -29,7 +32,7 @@ set_property -dict [list CONFIG.Memory_Type {True_Dual_Port_RAM} CONFIG.Enable_3
 
 
 
-set_property  ip_repo_paths  /home/pcw1029/projects/MTTS/hw/single_bram_controller [current_project]
+set_property  ip_repo_paths  $script_path [current_project]
 update_ip_catalog
 
 create_bd_cell -type ip -vlnv user.org:user:single_bram_controller:1.0 single_bram_controll_0
@@ -69,10 +72,10 @@ endgroup
 regenerate_bd_layout
 save_bd_design
 
-make_wrapper -files [get_files /home/pcw1029/projects/MTTS/hw/test_single_bram_controller/single_bram_controller.srcs/sources_1/bd/design_1/design_1.bd] -top
-add_files -norecurse /home/pcw1029/projects/MTTS/hw/test_single_bram_controller/single_bram_controller.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v
+make_wrapper -files [get_files $script_path/../test_single_bram_controller/single_bram_controller.srcs/sources_1/bd/design_1/design_1.bd] -top
+add_files -norecurse $script_path/../test_single_bram_controller/single_bram_controller.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v
 
 
 set_property SOURCE_SET sources_1 [get_filesets sim_1]
-add_files -fileset sim_1 -norecurse /home/pcw1029/projects/MTTS/hw/single_bram_controller/src/tb_single_bram_ctrl.v
+add_files -fileset sim_1 -norecurse $script_path/src/tb_single_bram_ctrl.v
 update_compile_order -fileset sim_1
